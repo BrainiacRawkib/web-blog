@@ -1,0 +1,57 @@
+{% extends "django_comments_xtd/base.html" %}
+{% load i18n %}
+{% load comments_xtd %}
+{% load thumbnail %}
+
+{% block title %}{% trans "Preview your comment" %}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="mb-4">
+    <h3 class="text-center font-weight-bold">{% trans "Preview your comment" %}</h3>
+    <hr/>
+  </div>
+  <h4 class="text-center font-weight-bold mb-3">
+    <a href="{{ form.target_object.get_absolute_url }}" class="card-link">
+        {{ form.target_object }}
+    </a>
+  </h4>
+  <div class="row">
+    <div class="col-md-12 mt-3">
+      {% if not comment %}
+      <em>{% trans "Empty comment." %}</em>
+      {% else %}
+      <div class="media">
+        <div class="mr-3">
+            {% thumbnail user.profile.photo '50x50' as im %}
+                <img src="{{ im.url }}" alt="{{ user.username }}" class="rounded-circle" width="50">
+            {% endthumbnail %}
+        </div>
+        <div class="media-body">
+          <div class="comment pb-3">
+            <h6 class="mb-1">
+              <div class="mr-auto">
+                {% if form.cleaned_data.url %}
+                <a href="{{ form.cleaned_data.url }}" target="_new">
+                    <h5 class="font-weight-bolder">{{ form.cleaned_data.name }}</h5>
+                </a>
+                {% else %}
+                    <h5 class="font-weight-bolder">{{ form.cleaned_data.name }}</h5>
+                {% endif %}
+              </div>
+            </h6>
+            <div class="content">{{ comment }}</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      <div class="card mt-4 mb-5">
+        <div class="card-body">
+          <h4 class="card-title text-center pb-3 font-weight-bold">{% trans "Post your comment" %}</h4>
+          {% include "comments/form.html" %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

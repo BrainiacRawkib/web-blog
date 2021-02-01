@@ -1,0 +1,58 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="{% static 'img/favicon.jpg' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+{#    <link rel="stylesheet" href="{% static 'css/cyborg_bootstrap.min.css' %}">#}
+    <link rel="stylesheet" href="{% static 'css/all.css' %}">
+    {% if title %}
+        <title>Tech Blog | {{ title }}</title>
+    {% else %}
+        <title>Tech Blog | {% block title %}{% endblock %}</title>
+    {% endif %}
+</head>
+<body>
+
+{% include 'partials/_navbar.html' %}
+    {% include 'partials/_messages.html' %}
+<div class="container-fluid">
+
+{#    {% if not request.path == '/register/' or request.path == '/login/' %}#}
+    {% if not 'register' in request.path and not 'login' in request.path %}
+        {% include 'partials/_search_form.html' %}
+    {% endif %}
+
+    <div class="row mb-5">
+        <div class="col-lg-9">
+            {% block content %}
+            {% endblock %}
+            {% include 'partials/_pagination.html' %}
+        </div>
+
+        {% if request.path == '/register/' or request.path == '/profile/' or request.path == '/login/' %}
+            <div class="col-lg-3 mt-4">
+                {% include 'partials/_registration_side_note.html' %}
+            </div>
+        {% else %}
+            <div class="col-lg-3">
+                {% include 'partials/_blog_extras.html' %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

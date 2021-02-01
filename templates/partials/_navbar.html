@@ -1,0 +1,64 @@
+{% load static %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top" id="home-navbar">
+    <a href="{% url 'posts:index' %}" class="navbar-brand">
+        <img src="{% static 'img/favicon.jpg' %}" alt="favicon" class="rounded-circle" width="30" height="30">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav grid-navbar">
+            <li {% if '/' == request.path %} class="nav-item active mr-3" {% else %} class="nav-item mr-3" {% endif %}>
+                <a href="{% url 'posts:index' %}" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+            <li {% if 'categories' in request.path %} class="nav-item active mr-3" {% else %} class="nav-item mr-3" {% endif %}>
+                <a href="{% url 'posts:categories' %}" class="nav-link">
+                    <i class="fas fa-newspaper"></i> Posts By Categories
+                </a>
+            </li>
+            {% if request.user.is_authenticated and perms.posts.add_post %}
+                <li {% if 'create-post' in request.path %} class="nav-item active mr-3" {% else %} class="nav-item mr-3" {% endif %}>
+                    <a href="{% url 'posts:create-post' %}" class="nav-link">
+                        <i class="fas fa-plus-square"></i> Add Post
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
+            {% if request.user.is_authenticated %}
+                <li {% if 'profile' in request.path %}class="nav-item active mr-3" {% else %}class="nav-item mr-3"{% endif %}>
+                    <a href="{% url 'users:profile' %}" class="nav-link">
+                        <img src="{{ request.user.profile.photo.url }}" alt="{{ request.user.username }}" class="rounded-circle" width="30" height="30">
+                        &nbsp;{{ request.user.username }}&apos;s&nbsp; Profile
+                    </a>
+                </li>
+                <li class="nav-item mr-3">
+                    <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                    <form action="{% url 'users:logout' %}" id="logout" method="post">
+                        {% csrf_token %}
+                        <input type="hidden">
+                    </form>
+                </li>
+            {% else %}
+                <li {% if 'register' in request.path %}class="nav-item active mr-3" {% else %}class="nav-item mr-3"{% endif %}>
+                    <a href="{% url 'users:register' %}" class="nav-link">
+                        Join
+                    </a>
+                </li>
+                <li {% if 'login' in request.path %}class="nav-item active mr-3" {% else %}class="nav-item mr-3"{% endif %}>
+                    <a href="{% url 'users:login' %}" class="nav-link">
+                        Login
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% load timesince_filter %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="font-weight-bolder">{{ user.username }}&apos;s Profile</h5>
+                    </div>
+                    <div class="card-img-top">
+                        {% thumbnail user.profile.photo '300x300' as im %}
+                            <img src="{{ im.url }}" alt="{{ user.username }}&apos;s photo" class="img-thumbnail" width="100%">
+                        {% endthumbnail %}
+                        <br>
+                    </div>
+                    <div class="card-footer">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 col-sm-12">
+                <div class="card">
+                    <div class="card-header text-center font-weight-bolder">
+                        About {{ user.username }}
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <p class="ml-2">
+                                Username &colon; {{ user.username }}
+                            </p>
+                        </div>
+                        <div class="row">
+                            <p class="ml-2">
+                                Email &colon; {{ user.email }}
+                            </p>
+                        </div>
+                        <div class="row">
+                            <p class="ml-2">
+{#                                {% if user %}#}
+{#                                    Online#}
+{#                                {% else %}#}
+                                    Last Seen &colon; {{ user.last_login|timesince|upto:',' }}&nbsp;ago
+{#                                {% endif %}#}
+                            </p>
+                        </div>
+                        <div class="row">
+                            <p class="ml-2">
+                                Active &colon; {{ user.is_active }}
+                            </p>
+                        </div>
+                        <div class="row">
+                            <p class="ml-2">
+                                Joined &colon; {{ user.date_joined|timesince|upto:',' }}&nbsp;ago
+                            </p>
+                        </div>
+                        <div class="row">
+                            <p class="ml-2">
+                                Posts published &colon; {{ user.author_post.count }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-lg col-sm-12">
+                                <a href="{{ user.profile.facebook }}" target="_blank" class="btn btn-outline-primary btn-block text-decoration-none font-weight-bolder">
+                                    Like on Facebook <i class="fab fa-facebook-square"></i>
+                                </a>
+                            </div>
+                            <div class="col-lg col-sm-12">
+                                <a href="{{ user.profile.twitter }}" target="_blank" class="btn btn-outline-primary btn-block mt-3 mt-lg-0 text-decoration-none font-weight-bolder">
+                                    Follow on Twitter <i class="fab fa-twitter"></i>
+                                </a>
+                            </div>
+                            <div class="col-lg col-sm-12">
+                                <a href="{{ user.profile.linkedin }}" target="_blank" class="btn btn-outline-primary btn-block mt-3 mt-lg-0 text-decoration-none font-weight-bolder">
+                                    Connect on LinkedIn <i class="fab fa-linkedin"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

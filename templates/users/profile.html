@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load thumbnail %}
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="font-weight-bolder">Your Profile</h5>
+            </div>
+            <div class="card-body">
+                {% thumbnail user.profile.photo '300x300' as im %}
+                    <img src="{{ im.url }}" alt="{{ user.username }}&apos;s photo" class="img-thumbnail" width="{{ im.width }}">
+                {% endthumbnail %}
+                <form action="{% url 'users:profile' %}" method="post" class="form-group mt-4" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ user_form|crispy }}
+                    {{ profile_form|crispy }}
+                    <button type="submit" class="btn btn-success form-control font-weight-bolder">
+                        Update Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "django_comments_xtd/base.html" %}
+{% load i18n %}
+{% load comments_xtd %}
+{% load thumbnail %}
+
+{% block title %}{% trans "Confirm your opinion" %}{% endblock %}
+
+{% block header %}
+<a href="{{ comment.content_object.get_absolute_url }}">{{ comment.content_object }}</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container mb-4">
+        <h3 class="text-center font-weight-bold">
+            {% if already_liked_it %}
+                {% trans "You liked this comment, do you want to change it?" %}
+            {% else %}
+                {% trans "Do you like this comment?" %}
+            {% endif %}
+        </h3>
+      <hr/>
+
+    <p class="text-center font-weight-bold font-italic">{% trans "Please, confirm your opinion about the comment." %}</p>
+    <div class="row">
+      <div class="offset-lg-1 col-lg-10">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="media pb-2">
+            {% thumbnail comment.user.profile.photo '50x50' as im %}
+                <img src="{{ im.url }}" alt="{{ user.username }}" class="rounded-circle mr-3" width="48">
+            {% endthumbnail %}
+              <div class="media-body">
+                <h6 class="mb-1 font-weight-bold">
+                  {% if comment.user_url %}
+                  <a href="{{ comment.user_url }}" target="_new">{% endif %}
+                    <a href="{% url 'posts:view-author-profile' comment.user.username %}" class="text-decoration-none">
+                        {{ comment.user_name }}
+                    </a>
+                    {% if comment.user_url %}
+                  </a>{% endif %}
+                </h6>
+                <p>{{ comment.comment }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% with object_absolute_url=comment.content_object.get_absolute_url %}
+        {% if object_absolute_url %}
+        <h5 class="text-center font-weight-bold">
+          {% trans "Posted to"%}:&nbsp;
+            <a href="{{ object_absolute_url }}" class="card-link">
+                {{ comment.content_object }}
+            </a>
+        </h5>
+        {% endif %}
+        {% endwith %}
+        <div class="visible-lg-block visible-md-block">
+          <hr/>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="offset-lg-1 col-lg-10">
+        {% if already_liked_it %}
+        <div class="alert alert-warning text-center font-weight-bold">
+          {% trans 'Click on the "withdraw" button if you want to withdraw your positive opinion on this comment.' %}
+        </div>
+        {% endif %}
+        <div class="well well-lg">
+          <form action="." method="post" class="form-horizontal">
+              {% csrf_token %}
+            <input type="hidden" name="next" value="{{ comment.get_absolute_url }}">
+            <div class="form-group">
+              <div class="text-center">
+                {% if already_liked_it %}
+                    <button type="submit" name="submit" class="btn btn-warning font-weight-bold">
+                        {% trans 'Withdraw' %}
+                    </button>
+                {% else %}
+                    <button type="submit" name="submit" class="btn btn-primary font-weight-bold">
+                        {% trans 'Like' %} <i class="fas fa-thumbs-up"></i>
+                    </button>
+                {% endif %}
+                    <button type="button" class="btn btn-secondary font-weight-bold">
+                        <i class="fas fa-arrow-alt-circle-left"></i>
+                        <a class="text-white text-decoration-none" href="{{ comment.get_absolute_url }}">
+                            {% trans "Nope" %}
+                        </a>
+                    </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+{% endblock %}

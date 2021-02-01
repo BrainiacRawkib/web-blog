@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header font-weight-bolder text-center">
+                Create &sol; Update Post
+            </div>
+            <div class="card-body">
+        <form action="" method="post" class="form-group">
+            {% csrf_token %}
+            {{ form|crispy }}
+            {{ form.media }}
+            <button type="submit" class="btn btn-primary btn-block">
+                Submit <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+                </div>
+        </div>
+    </div>
+{% endblock %}

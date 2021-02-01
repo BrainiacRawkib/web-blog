@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load comments %}
+{% load thumbnail %}
+{% load timesince_filter %}
+
+{% block content %}
+    <!-- categories -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 my-2">
+                <div class="card-deck">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <p class="card-text font-weight-bolder">
+                                <a href="{% url 'posts:categories' %}" class="card-link">
+                                    All
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% for c in categories %}
+                <div class="col-md-3 my-2">
+                    <div class="card-deck">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <p class="card-text font-weight-bolder">
+                                    <a href="{{ c.get_absolute_url }}" class="card-link">
+{#                                    <a href="{% url 'posts:post-by-categories' c.slug %}" class="card-link">#}
+                                        {{ c.name }}
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="container mt-5 text-center">
+                    <p class="lead font-weight-bolder">
+                        No Categories Yet
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if category %}
+        <div class="container mt-4">
+            <h3 class="text-center mb-3 font-weight-bold">{{ category.name }} {{ category.categories.count }}</h3>
+            {% for post in object_list %}
+                <div class="col mt-2">
+                    {% thumbnail post.author.profile.photo '50' as im %}
+                        <img src="{{ im.url }}" alt="{{ post.author.username }}" class="rounded-circle" width="50">
+                    {% endthumbnail %}
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <a href="{% url 'posts:user-posts' post.author.username %}" class="card-link font-weight-bolder">
+                            {{ post.author.username }}
+                        </a>&nbsp;
+                        <small class="text-secondary font-weight-bolder">
+                            Posted: {{ post.date_posted|timesince|upto:',' }}&nbsp;ago
+                        </small>
+                        {% if post.updated.date > post.date_posted.date %}
+                            <small class="text-secondary font-weight-bolder">
+                                Updated: {{ post.updated|timesince|upto:',' }}&nbsp;ago
+                            </small>
+                        {% endif %}
+                        <small class="text-secondary float-md-right font-weight-bolder">
+                            {{ post.category }}
+                        </small>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="text-center">
+{#                            <a href="{% url 'posts:post-detail' post.pk post.slug post.date_posted.year post.date_posted.month post.date_posted.day %}" class="card-link">{{ post.title }}</a>#}
+                            <a href="{{ post.get_absolute_url }}" class="card-link">
+                                {{ post.title }}
+                            </a>
+                        </h5>
+                        <p>
+                            {{ post.content|safe }}
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        {% for tag in post.tags.all %}
+                            <a href="{% url 'posts:post_list_by_tag' tag.slug %}" class="text-decoration-none font-weight-bold text-secondary">
+                                <i class="fas fa-tag"></i> {{ tag.name }} &nbsp;
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- comments -->
+                <div class="container text-center my-2">
+                    {% get_comment_count for post as comment_count %}
+                    {% if comment_count %}
+                        <p class="date">Published {{ post.publish }}
+                            &sdot;&nbsp;{{ comment_count }} comment{{ comment_count|pluralize }}
+                        </p>
+                    {% else %}
+                        <p>No Comments</p>
+                    {% endif %}
+                </div>
+            {% empty %}
+                 <div class="card">
+                     <div class="card-header">
+                         <h5 class="text-center font-weight-bolder">Post 404</h5>
+                     </div>
+                     <div class="card-body">
+                         <h1 class="text-center">No post found</h1>
+                     </div>
+                 </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="container mt-4">
+            <h3 class="text-center mb-3 font-weight-bold">{{ category.name }} {{ category.categories.count }}</h3>
+            {% for post in object_list %}
+                <div class="col mt-2">
+                    {% thumbnail post.author.profile.photo '50' as im %}
+                        <img src="{{ im.url }}" alt="{{ post.author.username }}" class="rounded-circle" width="50">
+                    {% endthumbnail %}
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <a href="{% url 'posts:user-posts' post.author.username %}" class="card-link font-weight-bolder">
+                            {{ post.author.username }}
+                        </a>&nbsp;
+                        <small class="text-secondary font-weight-bolder">
+                            Posted: {{ post.date_posted|timesince|upto:',' }}&nbsp;ago
+                        </small>
+                        {% if post.updated.date > post.date_posted.date %}
+                            <small class="text-secondary font-weight-bolder">
+                                Updated: {{ post.updated|timesince|upto:',' }}&nbsp;ago
+                            </small>
+                        {% endif %}
+                        <small class="text-secondary float-md-right font-weight-bolder">
+                            {{ post.category }}
+                        </small>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="text-center">
+{#                            <a href="{% url 'posts:post-detail' post.pk post.slug post.date_posted.year post.date_posted.month post.date_posted.day %}" class="card-link">{{ post.title }}</a>#}
+                            <a href="{{ post.get_absolute_url }}" class="card-link">
+                                {{ post.title }}
+                            </a>
+                        </h5>
+                        <p>
+                            {{ post.content|safe }}
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        {% for tag in post.tags.all %}
+                            <a href="{% url 'posts:post_list_by_tag' tag.slug %}" class="text-decoration-none font-weight-bold text-secondary">
+                                <i class="fas fa-tag"></i> {{ tag.name }} &nbsp;
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- comments -->
+                <div class="container text-center my-2">
+                    {% get_comment_count for post as comment_count %}
+                    {% if comment_count %}
+                        <p class="date">Published {{ post.publish }}
+                            &sdot;&nbsp;{{ comment_count }} comment{{ comment_count|pluralize }}
+                        </p>
+                    {% else %}
+                        <p>No Comments</p>
+                    {% endif %}
+                </div>
+            {% empty %}
+                 <div class="card">
+                     <div class="card-header">
+                         <h5 class="text-center font-weight-bolder">Post 404</h5>
+                     </div>
+                     <div class="card-body">
+                         <h1 class="text-center">No post found</h1>
+                     </div>
+                 </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
