@@ -11,6 +11,7 @@ from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm
 
 
 class RegistrationView(SuccessMessageMixin, CreateView):
+    """Register a new user."""
     template_name = 'users/register.html'
     form_class = UserRegistrationForm
     success_url = reverse_lazy('posts:index')
@@ -18,17 +19,24 @@ class RegistrationView(SuccessMessageMixin, CreateView):
     extra_context = {'title': 'Register'}
 
     def get_success_message(self, cleaned_data):
-        return self.success_message % dict(cleaned_data, user=self.object.user)
+        return self.success_message % dict(cleaned_data, user=self.object.username)
 
 
 class ProfileView(LoginRequiredMixin, TemplateView, View):
+    """User's Profile"""
     template_name = 'users/profile.html'
 
     def get_user_formset(self, data=None):
         return UserUpdateForm(instance=self.request.user, data=data)
 
+    default_data = {
+        'facebook': 'https://facebook.com/',
+        'twitter': 'https://twitter.com/',
+        'linkedin': 'https://linkedin.com/'
+    }
+
     def get_profile_formset(self, data=None, files=None):
-        return ProfileUpdateForm(instance=self.request.user.profile, data=data, files=files)
+        return ProfileUpdateForm(instance=self.request.user.profile, data=data, files=files, initial=self.default_data)
 
     def get(self, request, *args, **kwargs):
         user_formset = self.get_user_formset()
@@ -56,18 +64,21 @@ class ProfileView(LoginRequiredMixin, TemplateView, View):
 
 
 class UserLoginView(SuccessMessageMixin, LoginView):
+    """User login view"""
     extra_context = {'title': 'Login'}
     template_name = 'users/login.html'
     success_message = 'Login Successful'
 
 
 def logout_view(request):
+    """User logout view"""
     logout(request)
     messages.success(request, 'Logged Out')
     return redirect('posts:index')
 
 
 class UserLogoutView(SuccessMessageMixin, LogoutView):
+    """User logout view"""
     success_message = 'Logged Out'
 
     def post(self, request, *args, **kwargs):

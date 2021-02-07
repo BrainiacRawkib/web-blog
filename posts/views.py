@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
-from django.db.models import Max, Count, Value
-from django.contrib.postgres.search import SearchVector
+from django.shortcuts import get_object_or_404
+from django.db.models import Count
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.views.generic import ListView, DetailView, FormView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
@@ -10,6 +10,7 @@ from .models import Post, Category
 
 
 class PostListView(ListView):
+    """List all published posts."""
     model = Post
     template_name = 'posts/index.html'
     paginate_by = 5
@@ -17,13 +18,14 @@ class PostListView(ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        if self.kwargs.get('tag_slug'):  # tag_slug:
+        if self.kwargs.get('tag_slug'):
             tag = get_object_or_404(Tag, slug=self.kwargs.get('tag_slug'))
             return Post.objects.filter(tags__in=[tag]).order_by('-date_posted')
         return Post.objects.order_by('-date_posted')
 
 
 class PostDetailView(DetailView):
+    """Detail of a post."""
     model = Post
     template_name = 'posts/post_detail.html'
     # slug_field = 'slugy'
@@ -39,6 +41,7 @@ class PostDetailView(DetailView):
 
 
 class PostCreateView(SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    """Create a post by authenticated and permitted users."""
     model = Post
     permission_required = 'posts.can_add'
     fields = ['category', 'title', 'content', 'status', 'tags']
@@ -51,6 +54,7 @@ class PostCreateView(SuccessMessageMixin, LoginRequiredMixin, PermissionRequired
 
 
 class PostUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """Update a post by the author after authentication."""
     model = Post
     permission_denied_message = 'You can\'t edit this post'
     extra_context = {'title': 'Update Post'}
@@ -70,6 +74,7 @@ class PostUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixi
 
 
 class PostDeleteView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """Delete a post by the author after authentication."""
     model = Post
     extra_context = {'title': 'Delete Post'}
     success_message = 'Post Deleted Successfully!'
@@ -83,6 +88,7 @@ class PostDeleteView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixi
 
 
 class PostCategories(ListView):
+    """List all posts' categories and filter posts by categories."""
     model = Post
     template_name = 'posts/posts_by_categories.html'
     paginate_by = 3
@@ -106,6 +112,7 @@ class PostCategories(ListView):
 
 
 class UserPostListView(ListView):
+    """List all posts written by an author."""
     model = Post
     template_name = 'posts/user_posts.html'
     context_object_name = 'user_posts'
@@ -135,6 +142,7 @@ class UserPostListView(ListView):
 
 
 class ViewPostAuthorProfile(DetailView):
+    """View an author's profile."""
     model = User
     template_name = 'posts/user_profile.html'
     slug_field = 'username'
@@ -149,43 +157,29 @@ class ViewPostAuthorProfile(DetailView):
         return context
 
 
-class SearchView(ListView):
+class SearchView(FormView):
+    """Search for posts."""
     template_name = 'posts/search.html'
-    queryset = Post.objects.all()
-    paginate_by = 5
 
-    def get_queryset(self):
-        return Post.objects.order_by('-date_posted')
-
-    # def get_context_data(self, **kwargs):
-    #     results = None
-    #     if 'keyword' in self.request.GET:
-    #         keyword = self.request.GET.get('keyword')
-    #         results = Post.objects.annotate(
-    #             search=SearchVector('title', 'category__name', 'author__username', 'tags__name'),).filter(search=keyword)
-    #     context = {
-    #         'title': '{} Search Results'.format(self.request.GET['keyword']),
-    #         'object_list': results,
-    #         'values': self.request.GET
-    #     }
-    #     return context
-
-    def get_context_data(self, *, object_list=None,  **kwargs):
+    def get_context_data(self,  **kwargs):
         results = None
         if 'keyword' in self.request.GET:
             keyword = self.request.GET.get('keyword')
+            search_vector = SearchVector('title', 'content')
+            search_query = SearchQuery(keyword)
             results = Post.objects.annotate(
-                search=SearchVector('title', 'category__name', 'author__username', 'tags__name'),).filter(
-                search=keyword).order_by('-date_posted')
+                search=search_vector, rank=SearchRank(search_vector, search_query)).filter(
+                search=search_query).order_by('-rank')
         context = {
-            # 'title': '{} Search Results'.format(self.request.GET['keyword']),
-            'title': 'Search Results',
+            'title': '{} Search Results'.format(self.request.GET['keyword']),
+            'object_list': results,
             'values': self.request.GET
         }
-        return super(SearchView, self).get_context_data(object_list=results, **context)
+        return context
 
 
 class TrendingPostsView(ListView):
+    """List some Trending posts."""
     model = Post
     template_name = 'posts/trending_posts.html'
     paginate_by = 5

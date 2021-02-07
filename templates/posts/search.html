@@ -5,8 +5,11 @@
 
 {% block content %}
     <div class="container">
+{#        <h3 class="text-center">#}
+{#            Found {{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }}#}
+{#        </h3>#}
         <h3 class="text-center">
-            Found {{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }}
+            Found {{ object_list.count }} result{{ object_list|pluralize }}
         </h3>
         {% for result in object_list %}
             <div class="col mt-3">

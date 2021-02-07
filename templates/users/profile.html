@@ -15,6 +15,11 @@
                 <form action="{% url 'users:profile' %}" method="post" class="form-group mt-4" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ user_form|crispy }}
+{#                    {% for field in profile_form %}#}
+{#                        {% if field %}#}
+{##}
+{#                        {% endif %}#}
+{#                    {% endfor %}#}
                     {{ profile_form|crispy }}
                     <button type="submit" class="btn btn-success form-control font-weight-bolder">
                         Update Changes

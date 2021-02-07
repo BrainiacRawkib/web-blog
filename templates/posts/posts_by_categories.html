@@ -27,7 +27,6 @@
                             <div class="card-body text-center">
                                 <p class="card-text font-weight-bolder">
                                     <a href="{{ c.get_absolute_url }}" class="card-link">
-{#                                    <a href="{% url 'posts:post-by-categories' c.slug %}" class="card-link">#}
                                         {{ c.name }}
                                     </a>
                                 </p>
@@ -47,7 +46,9 @@
 
     {% if category %}
         <div class="container mt-4">
-            <h3 class="text-center mb-3 font-weight-bold">{{ category.name }} {{ category.categories.count }}</h3>
+            <h3 class="text-center mb-3 font-weight-bold">
+                {{ category.name }} {{ category.categories.count }} post{{ category.categories.count|pluralize }}
+            </h3>
             {% for post in object_list %}
                 <div class="col mt-2">
                     {% thumbnail post.author.profile.photo '50' as im %}
@@ -114,7 +115,9 @@
         </div>
     {% else %}
         <div class="container mt-4">
-            <h3 class="text-center mb-3 font-weight-bold">{{ category.name }} {{ category.categories.count }}</h3>
+            <h3 class="text-center mb-3 font-weight-bold">
+                All {{ page_obj.paginator.count }} post{{ page_obj.paginator.count|pluralize }}
+            </h3>
             {% for post in object_list %}
                 <div class="col mt-2">
                     {% thumbnail post.author.profile.photo '50' as im %}
