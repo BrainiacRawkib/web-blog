@@ -27,8 +27,6 @@
 {% include 'partials/_navbar.html' %}
     {% include 'partials/_messages.html' %}
 <div class="container-fluid">
-
-{#    {% if not request.path == '/register/' or request.path == '/login/' %}#}
     {% if not 'register' in request.path and not 'login' in request.path %}
         {% include 'partials/_search_form.html' %}
     {% endif %}
@@ -40,7 +38,7 @@
             {% include 'partials/_pagination.html' %}
         </div>
 
-        {% if request.path == '/register/' or request.path == '/profile/' or request.path == '/login/' %}
+        {% if request.path == '/register/' or request.path == '/login/' or request.user.is_anonymous %}
             <div class="col-lg-3 mt-4">
                 {% include 'partials/_registration_side_note.html' %}
             </div>
@@ -51,8 +49,6 @@
         {% endif %}
     </div>
 </div>
-
-
 
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script src="{% static 'js/popper.min.js' %}"></script>

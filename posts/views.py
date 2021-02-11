@@ -20,8 +20,8 @@ class PostListView(ListView):
     def get_queryset(self):
         if self.kwargs.get('tag_slug'):
             tag = get_object_or_404(Tag, slug=self.kwargs.get('tag_slug'))
-            return Post.objects.filter(tags__in=[tag]).order_by('-date_posted')
-        return Post.objects.order_by('-date_posted')
+            return Post.published.filter(tags__in=[tag]).order_by('-date_posted')
+        return Post.published.order_by('-date_posted')
 
 
 class PostDetailView(DetailView):
@@ -94,7 +94,7 @@ class PostCategories(ListView):
     paginate_by = 3
 
     def get_queryset(self):
-        return Post.objects.order_by('-date_posted')
+        return Post.published.order_by('-date_posted')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         category = None
@@ -120,7 +120,7 @@ class UserPostListView(ListView):
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return Post.objects.all().filter(author=user)
+        return Post.published.all().filter(author=user)
 
     def get_context_data(self, *, object_list=None,  **kwargs):
         data = super(UserPostListView, self).get_context_data(object_list=self.get_queryset(), **kwargs)
@@ -141,7 +141,7 @@ class UserPostListView(ListView):
         return data
 
 
-class ViewPostAuthorProfile(DetailView):
+class ViewPostAuthorProfile(LoginRequiredMixin, DetailView):
     """View an author's profile."""
     model = User
     template_name = 'posts/user_profile.html'
@@ -167,7 +167,7 @@ class SearchView(FormView):
             keyword = self.request.GET.get('keyword')
             search_vector = SearchVector('title', 'content')
             search_query = SearchQuery(keyword)
-            results = Post.objects.annotate(
+            results = Post.published.annotate(
                 search=search_vector, rank=SearchRank(search_vector, search_query)).filter(
                 search=search_query).order_by('-rank')
         context = {
@@ -185,7 +185,7 @@ class TrendingPostsView(ListView):
     paginate_by = 5
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        comments = Post.objects.annotate(num_comments=Count('post_comments')).order_by('-num_comments')[:6]
+        comments = Post.published.annotate(num_comments=Count('post_comments')).order_by('-num_comments')[:6]
         context = {
             'title': 'Trending Posts',
             'comments': comments,

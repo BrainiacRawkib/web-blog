@@ -36,14 +36,14 @@ class ProfileView(LoginRequiredMixin, TemplateView, View):
     }
 
     def get_profile_formset(self, data=None, files=None):
-        return ProfileUpdateForm(instance=self.request.user.profile, data=data, files=files, initial=self.default_data)
+        profile_formset = ProfileUpdateForm(instance=self.request.user.profile, data=data, files=files)
+        # profile_formset['photo'].label_tag(attrs={'class': 'custom-file-label'})
+        return profile_formset
 
     def get(self, request, *args, **kwargs):
-        user_formset = self.get_user_formset()
-        profile_formset = self.get_profile_formset()
         return self.render_to_response({
-            'user_form': user_formset,
-            'profile_form': profile_formset,
+            'user_form': self.get_user_formset(),
+            'profile_form': self.get_profile_formset(),
             'title': 'Profile'
         })
 

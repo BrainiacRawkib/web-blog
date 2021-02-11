@@ -51,13 +51,6 @@
   }
 }
 
-/*textarea {*/
-/*  resize: none;*/
-/*}*/
-
-/*@media only screen and (orientation: portrait) {*/
-/*  .grid-navbar {*/
-/*    display: grid !important;*/
-/*    grid-template-columns: repeat(2, 1fr) !important;*/
-/*  }*/
-/*}*/
+textarea {
+  resize: none;
+}

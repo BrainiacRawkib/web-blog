@@ -15,8 +15,9 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     search_fields = ['title', 'author', 'content']
-    list_display = ['id', 'title', 'category', 'author', 'date_posted', 'updated']
+    list_display = ['id', 'title', 'category', 'author', 'status', 'date_posted', 'updated']
     list_display_links = ['id', 'title']
+    list_editable = ['status']
     raw_id_fields = ('author', 'category')
 
 
