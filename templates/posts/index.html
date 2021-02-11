@@ -30,7 +30,9 @@
                 </div>
                 <div class="card-body">
                     <h5 class="text-center">
-                        <a href="{% url 'posts:post-detail' post.pk post.slug post.date_posted.year post.date_posted.month post.date_posted.day %}" class="card-link">{{ post.title }}</a>
+                        <a href="{% url 'posts:post-detail' post.pk post.slug post.date_posted.year post.date_posted.month post.date_posted.day %}" class="card-link">
+                            {{ post.title }}
+                        </a>
                     </h5>
                     <p>
                         {% if post.content|safe|wordcount > 50 %}
