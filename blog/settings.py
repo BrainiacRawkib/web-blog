@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 # env_path = Path('.') / '.env'
 #
 # load_dotenv(dotenv_path=env_path)
-load_dotenv(verbose=True)
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,7 +33,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.getenv('DEBUG') == 'True')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://brainiactechblog.herokuapp.com/']
 
 ADMINS = [
     (os.getenv('ADMIN'), os.getenv('EMAIL_HOST_USER')),
