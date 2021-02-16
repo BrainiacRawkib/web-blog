@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.views.generic import CreateView, TemplateView, View
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth import views as auth_views
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -25,15 +25,14 @@ class RegistrationView(SuccessMessageMixin, CreateView):
 class ProfileView(LoginRequiredMixin, TemplateView, View):
     """User's Profile"""
     template_name = 'users/profile.html'
-
-    def get_user_formset(self, data=None):
-        return UserUpdateForm(instance=self.request.user, data=data)
-
     default_data = {
         'facebook': 'https://facebook.com/',
         'twitter': 'https://twitter.com/',
         'linkedin': 'https://linkedin.com/'
     }
+
+    def get_user_formset(self, data=None):
+        return UserUpdateForm(instance=self.request.user, data=data)
 
     def get_profile_formset(self, data=None, files=None):
         profile_formset = ProfileUpdateForm(instance=self.request.user.profile, data=data, files=files)
@@ -63,7 +62,7 @@ class ProfileView(LoginRequiredMixin, TemplateView, View):
         })
 
 
-class UserLoginView(SuccessMessageMixin, LoginView):
+class UserLoginView(SuccessMessageMixin, auth_views.LoginView):
     """User login view"""
     extra_context = {'title': 'Login'}
     template_name = 'users/login.html'
@@ -77,10 +76,44 @@ def logout_view(request):
     return redirect('posts:index')
 
 
-class UserLogoutView(SuccessMessageMixin, LogoutView):
+class UserLogoutView(SuccessMessageMixin, auth_views.LogoutView):
     """User logout view"""
     success_message = 'Logged Out'
 
     def post(self, request, *args, **kwargs):
         messages.success(request, 'Logged Out')
         return super(UserLogoutView, self).post(request, *args, **kwargs)
+
+
+class ChangePasswordView(auth_views.PasswordChangeView):
+    template_name = 'users/passwords/password_change.html'
+    extra_context = {'title': 'Password Change'}
+    success_url = '/password-change/done/'
+
+
+class ChangePasswordDoneView(auth_views.PasswordChangeDoneView):
+    template_name = 'users/passwords/password_change_done.html'
+    extra_context = {'title': 'Password Changed Done'}
+
+
+class ResetPasswordView(auth_views.PasswordResetView):
+    template_name = 'users/passwords/password_reset.html'
+    extra_context = {'title': 'Password Reset'}
+    success_url = reverse_lazy('users:password-reset-done')
+    email_template_name = 'users/passwords/password_reset_email.html'
+
+
+class ResetPasswordDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'users/passwords/password_reset_done.html'
+    extra_context = {'title': 'Password Reset Done'}
+
+
+class ResetPasswordConfirmView(auth_views.PasswordResetConfirmView):
+    extra_context = {'title': 'Confirm Password Reset'}
+    success_url = reverse_lazy('users:password-reset-complete')
+    template_name = 'users/passwords/password_reset_confirm.html'
+
+
+class ResetPasswordCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'users/passwords/password_reset_complete.html'
+    extra_context = {'title': 'Password Reset Complete'}

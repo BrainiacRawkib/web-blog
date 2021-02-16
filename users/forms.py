@@ -34,14 +34,16 @@ class UserUpdateForm(forms.ModelForm):
 
 class ProfileUpdateForm(forms.ModelForm):
     """Form to update a user's image and social network links."""
+    # photo = forms.ImageField(label='Choose file',
+    #                          widget=forms.ClearableFileInput(attrs={'class': 'custom-file-input'}))
     photo = forms.ImageField(label='Choose file',
-                             widget=forms.ClearableFileInput(attrs={'class': 'custom-file-input'}))
+                             widget=forms.ClearableFileInput(attrs={'class': 'border'}))
     facebook = forms.URLField(widget=forms.URLInput(attrs={'class': 'form-control mb-1'}),
-                              help_text='https://facebook.com/username')
+                              help_text='https://facebook.com/username/')
     twitter = forms.URLField(widget=forms.URLInput(attrs={'class': 'form-control mb-1'}),
-                             help_text='https://twitter.com/username')
+                             help_text='https://twitter.com/username/')
     linkedin = forms.URLField(widget=forms.URLInput(attrs={'class': 'form-control mb-1'}),
-                              help_text='https://linkedin.com/username')
+                              help_text='https://linkedin.com/in/username/')
 
     class Meta:
         model = Profile

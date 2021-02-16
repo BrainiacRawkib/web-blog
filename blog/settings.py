@@ -150,9 +150,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = (os.getenv('CSRF_COOKIE_SECURE') == 'True')
 
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = (os.getenv('SESSION_COOKIE_SECURE') == 'True')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -183,7 +183,7 @@ MESSAGE_TAGS = {
 }
 
 # email config
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT'))

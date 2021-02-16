@@ -4,8 +4,8 @@
 {% block content %}
     <div class="container col-lg-8 mt-4">
         <div class="card">
-            <div class="card-header">
-                <h5 class="text-center font-weight-bolder">Login</h5>
+            <div class="card-header text-center font-weight-bolder">
+                Login
             </div>
             <div class="card-body">
                 <form method="post" class="form-group">
@@ -18,13 +18,13 @@
             </div>
             <div class="card-footer">
                 <small class="font-weight-bolder">
-                    Don't have an account ? &nbsp;
+                    Don't have an account &quest; &nbsp;
                     <a href="{% url 'users:register' %}" class="card-link">
                         Sign Up
                     </a>
                 </small>&verbar;
                 <small class="font-weight-bolder">
-                    <a href="#" class="card-link">
+                    <a href="{% url 'users:password-reset' %}" class="card-link">
                         Forgot Password
                     </a>
                 </small>

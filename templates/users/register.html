@@ -4,8 +4,8 @@
 {% block content %}
     <div class="container-fluid col-lg-8 mt-4">
         <div class="card">
-            <div class="card-header">
-                <h5>Sign Up Form <i class="fas fa-user-plus"></i></h5>
+            <div class="card-header card-text font-weight-bolder">
+                Sign Up Form <i class="fas fa-user-plus"></i>
             </div>
             <div class="card-body">
                 <form action="{% url 'users:register' %}" method="post" class="form-group">
@@ -21,11 +21,6 @@
                     Already have an account ? &nbsp;
                     <a href="{% url 'users:login' %}" class="card-link">
                         Login <i class="fas fa-sign-in-alt"></i>
-                    </a>
-                </small>&verbar;
-                <small class="font-weight-bolder">
-                    <a href="#" class="card-link">
-                        Forgot Password
                     </a>
                 </small>
             </div>
