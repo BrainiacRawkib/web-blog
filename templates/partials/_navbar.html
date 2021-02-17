@@ -28,6 +28,13 @@
                     </a>
                 </li>
             {% endif %}
+            {% if request.user.is_authenticated and request.user.is_superuser %}
+                <li class="nav-item mr-3">
+                    <a href="/tech-blog-admin/" class="nav-link">
+                        <i class="fas fa-user-shield"></i> Admin Panel
+                    </a>
+                </li>
+            {% endif %}
         </ul>
 
         <ul class="navbar-nav ml-auto">
