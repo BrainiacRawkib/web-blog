@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.getenv('DEBUG') == 'True')
 
-ALLOWED_HOSTS = ['brainiactechblog.herokuapp.com/']
+ALLOWED_HOSTS = ['brainiactechblog.herokuapp.com', 'https://brainiactechblog.herokuapp.com']
 
 ADMINS = [
     (os.getenv('ADMIN'), os.getenv('EMAIL_HOST_USER')),
@@ -153,6 +153,8 @@ USE_L10N = True
 USE_TZ = True
 
 CSRF_COOKIE_SECURE = (os.getenv('CSRF_COOKIE_SECURE') == 'True')
+
+SESSION_COOKIE_DOMAIN = os.getenv('SESSION_COOKIE_DOMAIN')
 
 SESSION_COOKIE_SECURE = (os.getenv('SESSION_COOKIE_SECURE') == 'True')
 
