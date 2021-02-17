@@ -158,7 +158,7 @@ SESSION_COOKIE_DOMAIN = os.getenv('SESSION_COOKIE_DOMAIN')
 
 SESSION_COOKIE_SECURE = (os.getenv('SESSION_COOKIE_SECURE') == 'True')
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS')
+CSRF_TRUSTED_ORIGINS = ['brainiactechblog.herokuapp.com', '.brainiactechblog.herokuapp.com']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
