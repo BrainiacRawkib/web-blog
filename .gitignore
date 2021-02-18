@@ -9,7 +9,7 @@ db.sqlite3
 /media
 cert.crt
 cert.key
-posts.json
+#posts.json
 
 # Backup files #
 *.bak
