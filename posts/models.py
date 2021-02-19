@@ -68,4 +68,4 @@ class Post(models.Model):
 
 
 class PostComment(XtdComment):
-    post_comment = models.ForeignKey(Post, related_name='post_comments', on_delete=models.CASCADE, default=1)
+    post_comment = models.ForeignKey(Post, related_name='post_comments', on_delete=models.CASCADE)
