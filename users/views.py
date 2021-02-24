@@ -1,25 +1,79 @@
-from django.shortcuts import redirect
-from django.views.generic import CreateView, TemplateView, View
+from django.shortcuts import redirect, render
+from django.views.generic import TemplateView, View
+from django.contrib.auth.models import User
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string, get_template
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm
 
 
-class RegistrationView(SuccessMessageMixin, CreateView):
-    """Register a new user."""
-    template_name = 'users/register.html'
-    form_class = UserRegistrationForm
-    success_url = reverse_lazy('posts:index')
-    success_message = '%(user)s Your Account Has Successfully Created!'
-    extra_context = {'title': 'Register'}
+UserModel = get_user_model()
 
-    def get_success_message(self, cleaned_data):
-        return self.success_message % dict(cleaned_data, user=self.object.username)
+
+class RegistrationView(SuccessMessageMixin, View):
+    """Register a new user."""
+    success_message = '%(user)s Your Account Has Successfully Created!'
+
+    def get(self, request):
+        context = {
+            'title': 'Register',
+            'form': UserRegistrationForm()
+        }
+        return render(request, 'users/register.html', context)
+
+    def post(self, request):
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Activate Your Account.'
+            activation_context = {
+                'user': user,
+                'domain': current_site,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user)
+            }
+            # msg = render_to_string('users/activate_account.html', activation_context)
+            msg = get_template('users/activate_account.html').render(activation_context)
+            to_email = user.email
+            send_email = EmailMessage(mail_subject, msg, to=[to_email])
+            send_email.content_subtype = 'html'
+            send_email.send()
+            messages.info(request, 'Please Confirm Your Email Address.')
+            return redirect('posts:index')
+        return render(request, 'users/register.html', {'form': form})
+
+
+class ActivateAccountView(TemplateView, View):
+    def get(self, request, *args, **kwargs):
+        try:
+            uid = urlsafe_base64_decode(self.kwargs.get('uidb64')).decode()
+            user = UserModel._default_manager.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and default_token_generator.check_token(user, self.kwargs.get('token')):
+            user.is_active = True
+            user.save()
+            messages.success(request, 'Account Activated Successfully. You Can Now Login')
+            return redirect('users:login')
+        else:
+            messages.error(request, 'Invalid Activation Link')
+            return redirect('users:register')
 
 
 class ProfileView(LoginRequiredMixin, TemplateView, View):
