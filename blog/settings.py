@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.getenv('DEBUG') == 'True')
 
-ALLOWED_HOSTS = ['brainiactechblog.herokuapp.com', 'https://brainiactechblog.herokuapp.com']
+ALLOWED_HOSTS = ['brainytechblog.herokuapp.com', 'https://brainytechblog.herokuapp.com/']
 
 ADMINS = [
     (os.getenv('ADMIN'), os.getenv('EMAIL_HOST_USER')),
