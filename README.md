@@ -5,5 +5,5 @@ packages were installed to facilitate the features of this project.
 
 
 Deployment:
-Cloud Platform: Heroku
+Cloud Platform: Heroku,
 Cloud Platform (Static files): Cloudinary
