@@ -7,4 +7,5 @@ packages were installed to facilitate the features of this project.
 Deployment Technology:
 
 Cloud Platform: Heroku,
+
 Cloud Platform (Static files): Cloudinary
