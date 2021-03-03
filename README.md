@@ -4,6 +4,7 @@ The Tech Blog is a web project built on Django leveraging the Class-Based View m
 packages were installed to facilitate the features of this project.
 
 
-Deployment:
+Deployment Technology:
+
 Cloud Platform: Heroku,
 Cloud Platform (Static files): Cloudinary
