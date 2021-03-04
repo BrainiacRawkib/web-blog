@@ -2,7 +2,9 @@
     Hi {{ user.username }},
     Please click on the link to confirm your registration,
 
-    http://{{ domain }}{% url 'users:confirm-email' uidb64=uid token=token %}
+    <a href="http://{{ domain }}{% url 'users:confirm-email' uidb64=uid token=token %}">
+        Verify Email
+    </a>
 
     If you think, it's not you, then just ignore this email.
 {% endautoescape %}
