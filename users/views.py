@@ -56,7 +56,11 @@ class RegistrationView(SuccessMessageMixin, View):
             send_email.send()
             messages.info(request, 'Please Confirm Your Email Address.')
             return redirect('posts:index')
-        return render(request, 'users/register.html', {'form': form})
+        context = {
+            'title': 'Register',
+            'form': form
+        }
+        return render(request, 'users/register.html', context)
 
 
 class ActivateAccountView(TemplateView, View):
